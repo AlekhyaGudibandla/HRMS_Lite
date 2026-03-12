@@ -1,0 +1,38 @@
+{
+  "name": "hrms-lite-backend",
+  "version": "1.0.0",
+  "description": "HRMS Lite Backend — Express.js + NeonDB (PostgreSQL) REST API (TypeScript)",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node --env-file=.env dist/server.js",
+    "dev": "tsc && node --env-file=.env dist/server.js",
+    "db:init": "npx tsx --env-file=.env src/config/initDb.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "@prisma/adapter-neon": "^7.5.0",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.2",
+    "pg": "^8.20.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.11",
+    "@types/pg": "^8.18.0",
+    "@types/ws": "^8.18.1",
+    "prisma": "^7.5.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

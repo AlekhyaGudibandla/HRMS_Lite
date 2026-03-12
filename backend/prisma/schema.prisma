@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Employee {
+  id          Int          @id @default(autoincrement())
+  employeeId  String       @unique @map("employee_id") @db.VarChar(50)
+  fullName    String       @map("full_name") @db.VarChar(255)
+  email       String       @db.VarChar(255)
+  department  String       @db.VarChar(255)
+  createdAt   DateTime?    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime?    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  attendance  Attendance[]
+
+  @@map("employees")
+}
+
+model Attendance {
+  id         Int       @id @default(autoincrement())
+  employeeId String    @map("employee_id") @db.VarChar(50)
+  date       DateTime  @db.Date
+  status     String    @db.VarChar(10) // Present, Absent
+  createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+  employee   Employee  @relation(fields: [employeeId], references: [employeeId], onDelete: Cascade)
+
+  @@unique([employeeId, date])
+  @@map("attendance")
+}
+
+model Activity {
+  id          Int       @id @default(autoincrement())
+  type        String    @db.VarChar(50) // EMPLOYEE_ADDED, ATTENDANCE_MARKED, etc.
+  description String    @db.Text
+  timestamp   DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@map("activities")
+}
