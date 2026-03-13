@@ -75,7 +75,16 @@ export default function EmployeeTable({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredEmployees.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-20 text-center">
+                      <div className="flex flex-col items-center justify-center space-y-3 opacity-30">
+                        <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Retrieving Staff Data...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredEmployees.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-16 text-center text-xs text-text-muted italic uppercase font-black tracking-widest opacity-40">
                       No matching colleagues found
