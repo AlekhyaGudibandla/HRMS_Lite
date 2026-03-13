@@ -17,9 +17,10 @@ const sanitize = (val: string | undefined): string => {
 
 export const CONFIG = {
   DATABASE_URL: sanitize(process.env.DATABASE_URL),
-  SMTP_USER: sanitize(process.env.SMTP_USER),
-  // Gmail App Passwords are 16 chars without spaces. We strip spaces just in case user copied them.
-  SMTP_PASS: sanitize(process.env.SMTP_PASS).replace(/\s+/g, ""),
+  // Fallback support for EMAIL_USER/PASS if the user used the guide's previous suggestion
+  SMTP_USER: sanitize(process.env.SMTP_USER || process.env.EMAIL_USER),
+  // Gmail App Passwords are 16 chars without spaces.
+  SMTP_PASS: sanitize(process.env.SMTP_PASS || process.env.EMAIL_PASS).replace(/\s+/g, ""),
   FRONTEND_URL: sanitize(process.env.FRONTEND_URL) || "http://localhost:3000",
   PORT: parseInt(sanitize(process.env.PORT)) || 5001,
   NODE_ENV: sanitize(process.env.NODE_ENV) || "development",
