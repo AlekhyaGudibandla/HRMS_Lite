@@ -18,7 +18,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 // Health check
-app.get("/", (_req, res) => {
+app.get("/", (_req: express.Request, res: express.Response) => {
   res.json({ message: "HRMS Lite API is running 🚀" });
 });
 

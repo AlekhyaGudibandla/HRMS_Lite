@@ -40,7 +40,7 @@ export const findAll = async (): Promise<EmployeeResponse[]> => {
     orderBy: { createdAt: "desc" },
   });
 
-  return employees.map((emp) => ({
+  return employees.map((emp: any) => ({
     employeeId: emp.employeeId,
     fullName: emp.fullName,
     email: emp.email,

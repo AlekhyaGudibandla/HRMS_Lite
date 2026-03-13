@@ -40,7 +40,7 @@ export const findByEmployeeId = async (employeeId: string): Promise<AttendanceRe
     orderBy: { date: "desc" },
   });
 
-  return records.map(r => ({
+  return records.map((r: any) => ({
     _id: r.id,
     employeeId: r.employeeId,
     date: r.date.toISOString().split("T")[0],
@@ -100,9 +100,9 @@ export const getSummary = async (date?: string) => {
 
   const workingDays = getWorkingDaysSoFar(year, month);
 
-  return employees.map((emp) => {
+  return employees.map((emp: any) => {
     // Current month stats
-    const monthPresent = emp.attendance.filter(a => a.status === "Present").length;
+    const monthPresent = emp.attendance.filter((a: any) => a.status === "Present").length;
     
     // Percentage based on Mon-Fri working days so far
     const monthlyRate = workingDays > 0 ? Math.round((monthPresent / workingDays) * 100) : 0;

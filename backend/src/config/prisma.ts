@@ -19,7 +19,7 @@ const prisma = new PrismaClient({ adapter });
 
 // Optional: Test connection on startup
 pool.query('SELECT NOW()')
-  .then(res => console.log("✅ Database connection verified via pg adapter:", res.rows[0].now))
-  .catch(err => console.error("❌ Database connection failed:", err.message));
+  .then((res: any) => console.log("✅ Database connection verified via pg adapter:", res.rows[0].now))
+  .catch((err: Error) => console.error("❌ Database connection failed:", err.message));
 
 export default prisma;
