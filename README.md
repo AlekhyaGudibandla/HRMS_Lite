@@ -2,7 +2,6 @@
 
 Managing a team shouldn't be complicated. **HRMS Lite** is a streamlined, modern human resource platform designed to help small teams stay organized with minimal effort. It focuses on the essentials: managing your people and keeping track of who's in.
 
-![HRMS Lite Dashboard](file:///C:/Users/alekh/.gemini/antigravity/brain/4726f4f9-95f5-4905-9794-cfa40ff692b0/ui_refactor_final_verification_1773371961192.webp)
 
 ---
 
