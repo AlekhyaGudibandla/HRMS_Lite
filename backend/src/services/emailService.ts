@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
     pass: CONFIG.SMTP_PASS,
   },
   // Double-force IPv4: Both a custom lookup and connection level family constraint.
-  lookup: (hostname, _options, callback) => {
+  lookup: (hostname: string, _options: any, callback: (err: Error | null, address: string, family: number) => void) => {
     dns.lookup(hostname, { family: 4 }, (err, address, family) => {
       if (err) console.error(`🔍 [DNS] Failed to resolve ${hostname}:`, err.message);
       else if (CONFIG.NODE_ENV !== "production") {
