@@ -14,14 +14,23 @@ const transporter = nodemailer.createTransport({
     user: CONFIG.SMTP_USER,
     pass: CONFIG.SMTP_PASS,
   },
-  // Custom DNS lookup to STRICTLY force IPv4. 
-  // Standard 'family: 4' is sometimes ignored by the underlying library in certain Node/env versions.
-  lookup: (hostname: string, options: any, callback: (err: Error | null, address: string, family: number) => void) => {
-    return dns.lookup(hostname, { family: 4 }, callback);
+  // Double-force IPv4: Both a custom lookup and connection level family constraint.
+  lookup: (hostname, _options, callback) => {
+    dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+      if (err) console.error(`🔍 [DNS] Failed to resolve ${hostname}:`, err.message);
+      else if (CONFIG.NODE_ENV !== "production") {
+         // Only log resolution in dev to avoid clutter, but it helps confirm it worked.
+         console.log(`🔍 [DNS] ${hostname} -> ${address} (v${family})`);
+      }
+      callback(err, address, family);
+    });
   },
   // Increase timeout for slow cloud network environments
-  connectionTimeout: 10000, 
-  greetingTimeout: 10000,
+  connectionTimeout: 15000, 
+  greetingTimeout: 15000,
+  // Force IPv4 at the connection level
+  // @ts-ignore
+  family: 4,
 } as nodemailer.TransportOptions);
 
 /** Verify connection on startup */
@@ -32,8 +41,13 @@ export const verifyEmailConnection = async () => {
     return true;
   } catch (error: any) {
     console.error("❌ Gmail SMTP connection failed:", error.message);
-    console.warn("   → Make sure SMTP_USER and SMTP_PASS are set in .env");
-    console.warn("   → SMTP_PASS must be a Gmail App Password (not your regular password)");
+    // Be more specific about errors
+    if (error.code === 'ENETUNREACH') {
+      console.warn("   → Network Unreachable: Still attempting IPv6? Check if Render has IPv6 disabled.");
+    }
+    if (!CONFIG.SMTP_USER || !CONFIG.SMTP_PASS) {
+      console.warn("   → Make sure SMTP_USER and SMTP_PASS are set in Environment variables.");
+    }
     return false;
   }
 };
