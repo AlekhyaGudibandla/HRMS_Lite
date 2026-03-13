@@ -20,60 +20,66 @@ export default function AttendanceSummaryTable() {
 
   return (
     <div className="space-y-6">
-      <div className="overflow-x-auto rounded-xl border border-border bg-white shadow-sm">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-border bg-surface-lighter/30">
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">Employee</th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">Total Present</th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-text-muted">Monthly Rate</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {summary.map((row) => {
-              const percentage = row.monthlyAttendanceRate || 0;
-              const presentDays = row.totalPresentDays || 0;
-              
-              const barColor = percentage > 80 ? "bg-success" : percentage > 50 ? "bg-warning" : "bg-danger";
+      <div className="overflow-x-auto rounded-xl border border-border bg-white shadow-sm custom-scrollbar">
+        <div className="min-w-[600px] w-full">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-border bg-surface-lighter/30">
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-text-muted">Staff Information</th>
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-text-muted">Total Presence</th>
+                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-text-muted">Monthly Engagement</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {summary.map((row) => {
+                const percentage = row.monthlyAttendanceRate || 0;
+                const presentDays = row.totalPresentDays || 0;
+                
+                const barColor = percentage > 80 ? "bg-success" : percentage > 50 ? "bg-warning" : "bg-danger";
 
-              return (
-                <tr key={row.employeeId} className="hover:bg-surface-lighter/50 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-[10px] font-bold">
-                        {row.fullName?.substring(0, 2).toUpperCase() || "??"}
+                return (
+                  <tr key={row.employeeId} className="hover:bg-surface-lighter/40 transition-all duration-200 group">
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-9 h-9 rounded-xl bg-black text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105">
+                          {row.fullName?.substring(0, 2).toUpperCase() || "??"}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-black text-text-primary tracking-tight truncate">{row.fullName || "Unknown"}</p>
+                          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-0.5">{row.employeeId}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-bold text-text-primary">{row.fullName || "Unknown"}</p>
-                        <p className="text-[10px] text-text-muted font-medium uppercase">{row.employeeId}</p>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-2.5">
+                         <div className="px-2.5 py-1 rounded-lg bg-surface-lighter border border-border/50">
+                           <span className="text-sm font-black text-text-primary">{presentDays}</span>
+                         </div>
+                         <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Logs</span>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                       <span className="text-sm font-bold text-text-primary">{presentDays}</span>
-                       <span className="text-xs text-text-muted">days</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right md:text-left">
-                    <div className="w-full max-w-[160px] space-y-2">
-                       <div className="flex items-center justify-between">
-                         <span className="text-xs font-bold text-text-primary">{percentage}%</span>
-                         <span className="text-[9px] text-text-muted uppercase font-bold tracking-tighter">Current Month</span>
-                       </div>
-                       <div className="h-1 w-full bg-surface-lighter rounded-full overflow-hidden">
-                         <div 
-                           className={cn("h-full rounded-full transition-all duration-1000", barColor)} 
-                           style={{ width: `${Math.min(percentage, 100)}%` }}
-                         />
-                       </div>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td className="px-6 py-5 min-w-[200px]">
+                      <div className="max-w-[180px] space-y-2.5">
+                         <div className="flex items-center justify-between">
+                           <span className={cn("text-xs font-black tracking-tighter", 
+                             percentage > 80 ? "text-success" : percentage > 50 ? "text-warning" : "text-danger"
+                           )}>{percentage}%</span>
+                           <span className="text-[9px] text-text-muted uppercase font-black tracking-tighter">Current Period</span>
+                         </div>
+                         <div className="h-1.5 w-full bg-surface-lighter rounded-full overflow-hidden p-[1px] border border-border/10">
+                           <div 
+                             className={cn("h-full rounded-full transition-all duration-1000 ease-out", barColor)} 
+                             style={{ width: `${Math.min(percentage, 100)}%` }}
+                           />
+                         </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

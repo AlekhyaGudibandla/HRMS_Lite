@@ -19,14 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       </head>
-      <body className={inter.className}>
-        <div className="flex min-h-screen">
+      <body className={`${inter.className} bg-surface-light`}>
+        <div className="flex min-h-screen relative overflow-x-hidden">
           <Sidebar />
-          {/* pt-20 on mobile for the top bar, lg:pt-0 on desktop; ml-0 on mobile, lg:ml-64 for sidebar */}
-          <main className="flex-1 pt-20 lg:pt-0 lg:ml-72 p-4 sm:p-6 lg:p-8">
-            {children}
+          <main className="flex-1 w-full lg:ml-72 min-h-screen">
+            <div className="max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-10 pt-20 lg:pt-10">
+              {children}
+            </div>
           </main>
         </div>
       </body>
