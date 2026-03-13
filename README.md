@@ -1,75 +1,73 @@
 # HRMS Lite — Human Resource Management System
 
-A full-stack web application for managing employees and tracking attendance.
+Managing a team shouldn't be complicated. **HRMS Lite** is a streamlined, modern human resource platform designed to help small teams stay organized with minimal effort. It focuses on the essentials: managing your people and keeping track of who's in.
 
-## Tech Stack
+![HRMS Lite Dashboard](file:///C:/Users/alekh/.gemini/antigravity/brain/4726f4f9-95f5-4905-9794-cfa40ff692b0/ui_refactor_final_verification_1773371961192.webp)
 
-| Layer     | Technology                            |
-|-----------|---------------------------------------|
-| Frontend  | Next.js (App Router), TypeScript, Tailwind CSS, Axios |
-| Backend   | Node.js, Express.js, REST API         |
-| Database  | MongoDB with Mongoose                 |
-| Deploy    | Vercel (frontend), Render (backend)   |
+---
 
-## Project Structure
+## 🌟 Key Features
 
-```
-HRMS/
-├── backend/          # Express.js REST API
-│   ├── config/       # MongoDB connection
-│   ├── models/       # Mongoose schemas
-│   ├── controllers/  # Business logic
-│   ├── routes/       # API routes
-│   ├── middleware/    # Error handling
-│   └── server.js     # Entry point
-│
-└── frontend/         # Next.js App
-    └── src/
-        ├── app/          # Pages (dashboard, employees, attendance)
-        ├── components/   # Reusable UI components
-        ├── services/     # API client (Axios)
-        └── types/        # TypeScript interfaces
-```
+- **Intuitive Dashboard**: At-a-glance view of team attendance and recent activity.
+- **Employee Directory**: Easily add, manage, and onboard new team members.
+- **Smart Attendance**: A refined, one-click interface to mark status (Present/Absent).
+- **Automated Reporting**: Real-time email updates for attendance rate and scheduled daily reports.
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop viewing.
 
-## Getting Started
+---
 
-### Prerequisites
-- Node.js 18+
-- MongoDB running locally or a MongoDB Atlas URI
+## 🛠️ The Tech Stack
 
-### Backend
+I built this using a modern, type-safe stack to ensure both performance and reliability:
 
-```bash
-cd backend
-npm install
-# Edit .env with your MONGO_URI
-npm run dev
-```
+- **Frontend**: [Next.js](https://nextjs.org/) (App Router), [Tailwind CSS](https://tailwindcss.com/) for styling, and [ShadCN UI](https://ui.shadcn.com/) for a premium component feel.
+- **Backend**: [Node.js](https://nodejs.org/) & [Express](https://expressjs.com/) for a lightweight but powerful REST API.
+- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/) to handle our data with strict integrity.
+- **Email**: [Nodemailer](https://nodemailer.com/) with custom network optimizations for high delivery reliability in cloud environments.
 
-The API runs on `http://localhost:5000`.
+---
 
-### Frontend
+## 🚀 Getting Started Locally
 
-```bash
-cd frontend
-npm install
-# Edit .env.local with your NEXT_PUBLIC_API_URL
-npm run dev
-```
+Getting the project running on your machine is straightforward. You'll need to set up both the backend and the frontend.
 
-The app runs on `http://localhost:3000`.
+### 1. Prerequisites
+- **Node.js**: Version 18 or higher.
+- **PostgreSQL**: A running instance (local or hosted like Neon.tech).
 
-## API Endpoints
+### 2. Backend Setup
+1. Navigate to the `backend` folder: `cd backend`
+2. Install dependencies: `npm install`
+3. Create a `.env` file and add your credentials:
+   ```env
+   DATABASE_URL="postgresql://user:pass@localhost:5432/hrms_lite"
+   SMTP_USER="your-email@gmail.com"
+   SMTP_PASS="your-16-char-app-password"
+   JWT_SECRET="your-secret-key"
+   FRONTEND_URL="http://localhost:3000"
+   ```
+4. Generate the database client: `npx prisma generate`
+5. Run the dev server: `npm run dev` (API will live on port 5001).
 
-| Method | Endpoint                    | Description              |
-|--------|-----------------------------|--------------------------|
-| POST   | `/api/employees`            | Create a new employee    |
-| GET    | `/api/employees`            | List all employees       |
-| DELETE | `/api/employees/:employeeId`| Delete an employee       |
-| POST   | `/api/attendance`           | Mark attendance          |
-| GET    | `/api/attendance/:employeeId`| Get attendance history  |
+### 3. Frontend Setup
+1. Navigate to the `frontend` folder: `cd frontend`
+2. Install dependencies: `npm install`
+3. Create a `.env.local` file:
+   ```env
+   NEXT_PUBLIC_API_URL="http://localhost:5001/api"
+   ```
+4. Start the app: `npm run dev` (Visit `http://localhost:3000`).
 
-## Deployment
+---
 
-- **Frontend** → Push to GitHub and connect to [Vercel](https://vercel.com). Set `NEXT_PUBLIC_API_URL` to your Render backend URL.
-- **Backend** → Push to GitHub and connect to [Render](https://render.com). Set `MONGO_URI` environment variable.
+## 💡 Important Notes (Assumptions & Limitations)
+
+- **Attendance Logic**: The system currently tracks attendance on a daily "status" basis (Present/Absent). It does not currently support multiple clock-in/out timestamps per day.
+- **Daily Reports**: The automated summary emails are scheduled to send at **6:00 PM server time** every day.
+- **Email Credentials**: For Gmail integration, you **must** use a 16-character App Password. A standard Gmail password will be rejected for security reasons.
+- **Network Routing**: I've included a custom network fix in the backend to ensure the app works reliably on cloud platforms (like Render) that sometimes struggle with outbound IPv6 routing.
+
+---
+
+## 📄 License
+This project is open-source and available for use and modification. Developed with ❤️ for better team management.
