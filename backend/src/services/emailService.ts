@@ -3,11 +3,12 @@ import { CONFIG } from "../config";
 
 /**
  * Gmail SMTP Transporter with hardened production settings.
+ * Using Port 587 (STARTTLS) which is more reliable in cloud environments than Port 465.
  */
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // Use SSL/TLS for standard port 465
+  port: 587,
+  secure: false, // Use STARTTLS
   auth: {
     user: CONFIG.SMTP_USER,
     pass: CONFIG.SMTP_PASS,
@@ -15,7 +16,10 @@ const transporter = nodemailer.createTransport({
   // Increase timeout for slow cloud network environments
   connectionTimeout: 10000, 
   greetingTimeout: 10000,
-});
+  // Force IPv4 at the connection level as well
+  // @ts-ignore - 'family' is a valid property but sometimes missing in older @types/nodemailer
+  family: 4,
+} as nodemailer.TransportOptions);
 
 /** Verify connection on startup */
 export const verifyEmailConnection = async () => {

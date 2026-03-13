@@ -1,4 +1,12 @@
 import "dotenv/config";
+import dns from "dns";
+
+// Global Network Fix: Force IPv4 for all DNS lookups. 
+// Cloud providers like Render often have issues routing traffic via IPv6 (connect ENETUNREACH).
+// This fixes BOTH database and email connectivity issues in production.
+if (typeof dns.setDefaultResultOrder === "function") {
+  dns.setDefaultResultOrder("ipv4first");
+}
 
 /**
  * Robustly sanitizes environment variables.
@@ -17,9 +25,9 @@ const sanitize = (val: string | undefined): string => {
 
 export const CONFIG = {
   DATABASE_URL: sanitize(process.env.DATABASE_URL),
-  // Fallback support for EMAIL_USER/PASS if the user used the guide's previous suggestion
+  // Fallback support for EMAIL_USER/PASS
   SMTP_USER: sanitize(process.env.SMTP_USER || process.env.EMAIL_USER),
-  // Gmail App Passwords are 16 chars without spaces.
+  // Gmail App Passwords
   SMTP_PASS: sanitize(process.env.SMTP_PASS || process.env.EMAIL_PASS).replace(/\s+/g, ""),
   FRONTEND_URL: sanitize(process.env.FRONTEND_URL) || "http://localhost:3000",
   PORT: parseInt(sanitize(process.env.PORT)) || 5001,
