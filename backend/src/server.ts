@@ -1,10 +1,12 @@
-import "dotenv/config";
+import { CONFIG } from "./config";
 import express from "express";
 import cors from "cors";
 import employeeRoutes from "./routes/employeeRoutes";
 import attendanceRoutes from "./routes/attendanceRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import errorHandler from "./middleware/errorHandler";
+import { verifyEmailConnection } from "./services/emailService";
+import { initAttendanceScheduler } from "./services/attendanceScheduler";
 
 const app = express();
 
@@ -19,17 +21,24 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // Health check
 app.get("/", (_req: express.Request, res: express.Response) => {
-  res.json({ message: "HRMS Lite API is running 🚀" });
+  res.json({ 
+    status: "healthy",
+    message: "HRMS Lite API is running 🚀",
+    env: CONFIG.NODE_ENV
+  });
 });
 
 // --------------- Error Handler -----------
 app.use(errorHandler);
 
-import { initAttendanceScheduler } from "./services/attendanceScheduler";
-
 // --------------- Start Server ------------
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+const PORT = CONFIG.PORT;
+app.listen(PORT, async () => {
+  console.log(`🚀 Server running on port ${PORT} (${CONFIG.NODE_ENV})`);
+  
+  // Verify SMTP on startup
+  await verifyEmailConnection();
+  
+  // Initialize Scheduler
   initAttendanceScheduler();
 });

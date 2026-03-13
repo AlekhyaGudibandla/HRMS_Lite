@@ -1,22 +1,20 @@
 import nodemailer from "nodemailer";
+import { CONFIG } from "../config";
 
 /**
- * Gmail SMTP Transporter.
- * 
- * Requirements:
- * 1. A Gmail account with 2-Step Verification enabled.
- * 2. A Gmail App Password (not your regular password).
- * 
- * Set these in your .env file:
- *   SMTP_USER=your_gmail@gmail.com
- *   SMTP_PASS=your_16_char_app_password
+ * Gmail SMTP Transporter with hardened production settings.
  */
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // Use SSL/TLS for standard port 465
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: CONFIG.SMTP_USER,
+    pass: CONFIG.SMTP_PASS,
   },
+  // Increase timeout for slow cloud network environments
+  connectionTimeout: 10000, 
+  greetingTimeout: 10000,
 });
 
 /** Verify connection on startup */
@@ -40,7 +38,7 @@ export const sendAttendanceEmail = async (
   rate: number,
   presentDays: number
 ) => {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!CONFIG.SMTP_USER || !CONFIG.SMTP_PASS) {
     console.warn("⚠️ SMTP credentials not configured. Skipping email for:", email);
     return { success: false, reason: "SMTP not configured" };
   }
@@ -49,7 +47,7 @@ export const sendAttendanceEmail = async (
   const rateColor = rate > 80 ? "#10b981" : rate > 50 ? "#f59e0b" : "#ef4444";
 
   const mailOptions = {
-    from: `"HRMS Lite" <${process.env.SMTP_USER}>`,
+    from: `"HRMS Lite" <${CONFIG.SMTP_USER}>`,
     to: email,
     subject: `📊 Your Attendance Report — ${monthName}`,
     html: `
@@ -93,10 +91,13 @@ export const sendAttendanceEmail = async (
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to ${email} (messageId: ${info.messageId})`);
+    console.log(`✅ Attendance email sent to ${email} (messageId: ${info.messageId})`);
     return { success: true, messageId: info.messageId };
   } catch (error: any) {
-    console.error(`❌ Failed to send email to ${email}:`, error.message);
+    console.error(`❌ Failed to send attendance email to ${email}:`, error.message);
+    if (error.code === 'EAUTH') {
+      console.error("   → SMTP Authentication Error: Please check if App Password is correct and has no spaces.");
+    }
     return { success: false, reason: error.message };
   }
 };
@@ -108,13 +109,13 @@ export const sendWelcomeEmail = async (
   employeeId: string,
   department: string
 ) => {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!CONFIG.SMTP_USER || !CONFIG.SMTP_PASS) {
     console.warn("⚠️ SMTP credentials not configured. Skipping welcome email for:", email);
     return { success: false, reason: "SMTP not configured" };
   }
 
   const mailOptions = {
-    from: `"HRMS Lite" <${process.env.SMTP_USER}>`,
+    from: `"HRMS Lite" <${CONFIG.SMTP_USER}>`,
     to: email,
     subject: `👋 Welcome to the Team, ${name}!`,
     html: `
