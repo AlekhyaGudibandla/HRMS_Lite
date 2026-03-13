@@ -1,6 +1,8 @@
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
 import nodemailer from "nodemailer";
 import { CONFIG } from "../config";
-import dns from "dns";
+
 
 /**
  * Gmail SMTP Transporter with hardened production settings.
