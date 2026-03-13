@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "prisma generate && tsc",
-    "start": "node --env-file=.env dist/server.js",
+    "start": "node dist/server.js",
     "dev": "prisma generate && tsc && node --env-file=.env dist/server.js",
     "db:init": "npx tsx --env-file=.env src/config/initDb.ts",
     "postinstall": "prisma generate"
