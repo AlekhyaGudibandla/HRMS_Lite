@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import * as employeeService from "../services/employeeService";
 import { sendSuccess, sendError } from "../utils";
 import { logActivity } from "../services/activityService";
+import { sendWelcomeEmail } from "../services/emailService";
 
 /**
  * Employee Controller — Handles HTTP requests and logs activities.
@@ -32,6 +33,11 @@ export const createEmployee = async (
     
     // Log Activity
     await logActivity("EMPLOYEE_ADDED", `Added new employee: ${fullName} (${employeeId})`);
+    
+    // Send Welcome Email (async, don't block response)
+    sendWelcomeEmail(email, fullName, employeeId, department).catch(err => 
+      console.error(`Failed to send welcome email to ${email}:`, err.message)
+    );
     
     sendSuccess(res, employee, 201);
   } catch (error) {

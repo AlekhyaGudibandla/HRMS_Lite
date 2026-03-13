@@ -100,3 +100,71 @@ export const sendAttendanceEmail = async (
     return { success: false, reason: error.message };
   }
 };
+
+/** Send welcome email to a newly onboarded employee */
+export const sendWelcomeEmail = async (
+  email: string,
+  name: string,
+  employeeId: string,
+  department: string
+) => {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn("⚠️ SMTP credentials not configured. Skipping welcome email for:", email);
+    return { success: false, reason: "SMTP not configured" };
+  }
+
+  const mailOptions = {
+    from: `"HRMS Lite" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: `👋 Welcome to the Team, ${name}!`,
+    html: `
+      <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #111; max-width: 520px; margin: auto; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden;">
+        <!-- Header -->
+        <div style="background: #111; color: #fff; padding: 32px;">
+          <h1 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.025em;">HRMS Lite</h1>
+          <div style="margin-top: 24px; width: 40px; h-1px; background: #333;"></div>
+        </div>
+        
+        <!-- Body -->
+        <div style="padding: 40px 32px;">
+          <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: 900; letter-spacing: -0.015em;">Welcome aboard, ${name}!</h2>
+          <p style="font-size: 15px; color: #555; margin: 0 0 24px; line-height: 1.6;">
+            We're thrilled to have you join us. Your profile has been successfully created in the <strong>HRMS Lite</strong> platform.
+          </p>
+
+          <!-- Profile Details Card -->
+          <div style="background: #fafafa; border: 1px solid #f0f0f0; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
+            <p style="margin: 0 0 20px; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700;">Your Onboarding Details</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <span style="font-size: 10px; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 2px;">Employee ID</span>
+                <span style="font-size: 14px; font-weight: 700; color: #111;">${employeeId}</span>
+              </div>
+              <div>
+                <span style="font-size: 10px; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 2px;">Department</span>
+                <span style="font-size: 14px; font-weight: 700; color: #111;">${department}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #fafafa; border-top: 1px solid #f0f0f0; padding: 16px 32px;">
+          <p style="margin: 0; font-size: 11px; color: #bbb; text-align: center;">
+            This is an automated onboarding message from HRMS Lite.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ Welcome email sent to ${email} (messageId: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (error: any) {
+    console.error(`❌ Failed to send welcome email to ${email}:`, error.message);
+    return { success: false, reason: error.message };
+  }
+};
