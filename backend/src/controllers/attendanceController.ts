@@ -4,6 +4,7 @@ import * as employeeService from "../services/employeeService";
 import * as attendanceService from "../services/attendanceService";
 import { sendSuccess, sendError } from "../utils";
 import { logActivity } from "../services/activityService";
+import { sendAttendanceEmail } from "../services/emailService";
 import { sendDailyReports } from "../services/attendanceScheduler";
 
 /**
@@ -36,6 +37,15 @@ export const markAttendance = async (
     // Log Activity
     await logActivity("ATTENDANCE_MARKED", `Marked ${employee.fullName} as ${status} for ${date}`);
     
+    // Send Real-time Attendance Email (async)
+    attendanceService.getEmployeeStats(employeeId).then(stats => {
+      if (stats) {
+        sendAttendanceEmail(stats.email, stats.fullName, stats.monthlyRate, stats.totalPresent).catch(err =>
+          console.error(`Failed to send real-time attendance email to ${stats.email}:`, err.message)
+        );
+      }
+    });
+
     sendSuccess(res, attendance, 201);
   } catch (error) {
     next(error);

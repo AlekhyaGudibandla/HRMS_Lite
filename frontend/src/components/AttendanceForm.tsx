@@ -74,49 +74,54 @@ export default function AttendanceForm({ onSubmit }: AttendanceFormProps) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest pl-1">Status</label>
-        <div className="flex gap-4">
-          <button
-            type="button"
-            onClick={() => setStatus("Present")}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-bold transition-all border",
-              status === "Present" 
-                ? "bg-black text-white border-black" 
-                : "bg-white text-text-secondary border-border hover:border-text-muted"
-            )}
-          >
-            <CheckCircle2 className="w-4 h-4" /> Present
-          </button>
-          <button
-            type="button"
-            onClick={() => setStatus("Absent")}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 p-3 rounded-xl text-sm font-bold transition-all border",
-              status === "Absent" 
-                ? "bg-black text-white border-black" 
-                : "bg-white text-text-secondary border-border hover:border-text-muted"
-            )}
-          >
-            <AlertCircle className="w-4 h-4" /> Absent
-          </button>
+      <div className="flex flex-col sm:flex-row items-end gap-3">
+        <div className="w-full sm:max-w-[280px] space-y-2">
+          <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest pl-1">Status</label>
+          <div className="flex gap-1.5 p-1 bg-surface-lighter rounded-xl border border-border/40 h-[44px]">
+            <button
+              type="button"
+              onClick={() => setStatus("Present")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 rounded-lg text-xs font-semibold transition-all",
+                status === "Present" 
+                  ? "bg-white text-black shadow-sm border border-border" 
+                  : "bg-transparent text-text-muted/90 hover:text-text-primary hover:bg-white/50"
+              )}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" /> Present
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatus("Absent")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 rounded-lg text-xs font-semibold transition-all",
+                status === "Absent" 
+                  ? "bg-white text-black shadow-sm border border-border" 
+                  : "bg-transparent text-text-muted/90 hover:text-text-primary hover:bg-white/50"
+              )}
+            >
+              <AlertCircle className="w-3.5 h-3.5" /> Absent
+            </button>
+          </div>
         </div>
-      </div>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full py-3 bg-black text-white rounded-xl text-sm font-bold hover:bg-neutral-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-      >
-        {submitting ? "Processing..." : "Mark Attendance"}
-      </button>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full sm:w-auto min-w-[200px] h-[44px] bg-neutral-900 text-white rounded-xl text-sm font-semibold hover:bg-black transition-all disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] border border-black/5 shadow-sm"
+        >
+          {submitting ? "..." : "Mark Attendance"}
+        </button>
+      </div>
 
       {msg && (
         <div className={cn(
-          "p-3 rounded-lg text-xs font-medium animate-in slide-in-from-top-2 duration-300",
-          msg.type === "success" ? "bg-success/10 text-success border border-success/20" : "bg-danger/10 text-danger border border-danger/20"
+          "p-2 text-xs font-semibold animate-in fade-in slide-in-from-top-1 duration-500 flex items-center justify-center gap-2",
+          msg.type === "success" 
+            ? "text-black" 
+            : "text-danger"
         )}>
+          {msg.type === "success" ? <CheckCircle2 className="w-3.5 h-3.5 opacity-50" /> : <AlertCircle className="w-3.5 h-3.5 opacity-50" />}
           {msg.text}
         </div>
       )}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { getErrorMessage } from "@/utils/errorHandler";
 import { Employee } from "@/types";
-import { UserPlus, User, Mail, Briefcase, Hash } from "lucide-react";
+import { UserPlus, User, Mail, Briefcase, Hash, CheckCircle2, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui";
 
 interface EmployeeFormProps {
@@ -129,9 +129,17 @@ export default function EmployeeForm({ onSubmit }: EmployeeFormProps) {
           </div>
 
           <div className="flex items-center justify-between gap-4 pt-2">
-            <div className="flex-1">
-              {error && <p className="text-xs text-danger font-medium animate-in slide-in-from-left-2">{error}</p>}
-              {success && <p className="text-xs text-success font-medium animate-in slide-in-from-left-2">{success}</p>}
+            <div className="flex-1 mt-1">
+              {error && (
+                <p className="text-xs text-danger font-semibold animate-in fade-in slide-in-from-left-1 duration-500 flex items-center gap-1.5">
+                   <AlertCircle className="w-3.5 h-3.5 opacity-60" /> {error}
+                </p>
+              )}
+              {success && (
+                <p className="text-xs text-black font-semibold animate-in fade-in slide-in-from-left-1 duration-500 flex items-center gap-1.5">
+                   <CheckCircle2 className="w-3.5 h-3.5 opacity-60" /> {success}
+                </p>
+              )}
             </div>
             <button
               type="submit"

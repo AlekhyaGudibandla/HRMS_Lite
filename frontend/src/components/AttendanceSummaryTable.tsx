@@ -2,8 +2,22 @@
 import { useAttendanceSummary } from "@/hooks/useAttendanceSummary";
 import { cn } from "@/components/ui";
 
-export default function AttendanceSummaryTable() {
-  const { summary, loading, error } = useAttendanceSummary();
+interface AttendanceSummaryTableProps {
+  summary?: any[];
+  loading?: boolean;
+  error?: string;
+}
+
+export default function AttendanceSummaryTable({ 
+  summary: externalSummary, 
+  loading: externalLoading, 
+  error: externalError 
+}: AttendanceSummaryTableProps) {
+  const internalHook = useAttendanceSummary();
+  
+  const summary = externalSummary !== undefined ? externalSummary : internalHook.summary;
+  const loading = externalLoading !== undefined ? externalLoading : internalHook.loading;
+  const error = externalError !== undefined ? externalError : internalHook.error;
 
   if (loading && summary.length === 0) return (
     <div className="p-12 flex flex-col items-center justify-center space-y-4 text-text-muted">
@@ -35,7 +49,7 @@ export default function AttendanceSummaryTable() {
                 const percentage = row.monthlyAttendanceRate || 0;
                 const presentDays = row.totalPresentDays || 0;
                 
-                const barColor = percentage > 80 ? "bg-success" : percentage > 50 ? "bg-warning" : "bg-danger";
+                const barColor = percentage > 80 ? "bg-black" : percentage > 50 ? "bg-neutral-600" : "bg-neutral-300";
 
                 return (
                   <tr key={row.employeeId} className="hover:bg-surface-lighter/40 transition-all duration-200 group">

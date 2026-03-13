@@ -117,6 +117,50 @@ export const getSummary = async (date?: string) => {
   });
 };
 
+/** Fetch stats for a single employee (used for real-time emails) */
+export const getEmployeeStats = async (employeeId: string) => {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+
+  const startOfMonth = new Date(Date.UTC(year, month, 1));
+  const endOfMonth = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59));
+
+  const employee = await prisma.employee.findUnique({
+    where: { employeeId },
+    include: {
+      attendance: {
+        where: {
+          date: {
+            gte: startOfMonth,
+            lte: endOfMonth,
+          }
+        },
+      },
+      _count: {
+        select: {
+          attendance: {
+            where: { status: "Present" }
+          },
+        },
+      },
+    },
+  });
+
+  if (!employee) return null;
+
+  const workingDays = getWorkingDaysSoFar(year, month);
+  const monthPresent = employee.attendance.filter((a: any) => a.status === "Present").length;
+  const monthlyRate = workingDays > 0 ? Math.round((monthPresent / workingDays) * 100) : 0;
+
+  return {
+    fullName: employee.fullName,
+    email: employee.email,
+    monthlyRate,
+    totalPresent: employee._count.attendance || 0,
+  };
+};
+
 /** Get attendance by date for all employees */
 export const getAttendanceByDate = async (date: string) => {
   const attendanceDate = new Date(date);

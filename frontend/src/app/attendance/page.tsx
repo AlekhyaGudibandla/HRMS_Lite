@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getEmployees } from "@/services/api";
 import { Employee } from "@/types";
-import { useAttendance } from "@/hooks";
+import { useAttendance, useAttendanceSummary } from "@/hooks";
 import AttendanceForm from "@/components/AttendanceForm";
 import AttendanceSummaryTable from "@/components/AttendanceSummaryTable";
 import { Card, CardHeader, CardContent, Badge } from "@/components/ui";
@@ -13,7 +13,15 @@ import PageHeader from "@/components/PageHeader";
 export default function AttendancePage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState("");
-  const { records, loading, mark } = useAttendance(selectedEmployee);
+  const { records, loading: historyLoading, mark } = useAttendance(selectedEmployee);
+  const { summary, loading: summaryLoading, error: summaryError, refresh: refreshSummary } = useAttendanceSummary();
+
+  const handleMarkSuccess = async (data: { employeeId: string; date: string; status: "Present" | "Absent" }) => {
+    const result = await mark(data);
+    if (result) {
+      await refreshSummary();
+    }
+  };
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -40,7 +48,7 @@ export default function AttendancePage() {
           <Card className="fade-in duration-500">
             <CardHeader title="Mark Attendance" subtitle="Select an employee and status for a specific date" />
             <CardContent>
-              <AttendanceForm onSubmit={mark} />
+              <AttendanceForm onSubmit={handleMarkSuccess} />
             </CardContent>
           </Card>
 
@@ -48,7 +56,11 @@ export default function AttendancePage() {
             <CardHeader title="Attendance Summary" subtitle="Calculated based on total records" />
             <div className="overflow-x-auto custom-scrollbar">
               <CardContent className="px-0 min-w-[600px] sm:min-w-0">
-                <AttendanceSummaryTable />
+                <AttendanceSummaryTable 
+                   summary={summary} 
+                   loading={summaryLoading} 
+                   error={summaryError} 
+                />
               </CardContent>
             </div>
           </Card>
@@ -88,7 +100,7 @@ export default function AttendancePage() {
                     </div>
                     <p className="text-xs text-text-muted font-bold uppercase tracking-widest">Select an employee to see activity log</p>
                   </div>
-                ) : loading ? (
+                ) : historyLoading ? (
                   <div className="flex items-center justify-center p-12">
                      <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
                   </div>

@@ -105,8 +105,8 @@ export default function EmployeeTable({
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-2.5">
-                          <div className="px-2.5 py-1 rounded-lg bg-success/5 border border-success/10">
-                            <span className="text-sm font-black text-success">{emp.totalPresentDays ?? 0}</span>
+                          <div className="px-2.5 py-1 rounded-lg bg-surface-lighter border border-border/50">
+                            <span className="text-sm font-black text-black">{emp.totalPresentDays ?? 0}</span>
                           </div>
                           <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Days Logged</span>
                         </div>

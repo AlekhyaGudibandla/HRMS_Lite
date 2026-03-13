@@ -18,23 +18,23 @@ export default function DashboardStats({ summary, loading }: DashboardStatsProps
     {
       title: "Total Employees",
       value: summary?.totalEmployees ?? 0,
-      icon: <Users className="w-5 h-5" />,
+      icon: <Users className="w-5 h-5 text-black" />,
       footer: "Direct staff members",
-      color: "text-text-muted"
+      color: "text-text-primary"
     },
     {
       title: "Present Today",
       value: summary?.presentToday ?? 0,
-      icon: <CheckCircle2 className="w-5 h-5 text-success" />,
+      icon: <CheckCircle2 className="w-5 h-5 text-black" />,
       footer: "On duty now",
-      color: "text-success"
+      color: "text-text-primary"
     },
     {
       title: "Absent Today",
       value: summary?.absentToday ?? 0,
-      icon: <XCircle className="w-5 h-5 text-danger" />,
+      icon: <XCircle className="w-5 h-5 text-neutral-400" />,
       footer: "Not present",
-      color: "text-danger"
+      color: "text-text-muted"
     },
   ];
 
