@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { CONFIG } from "../config";
+import dns from "dns";
 
 /**
  * Gmail SMTP Transporter with hardened production settings.
@@ -13,12 +14,14 @@ const transporter = nodemailer.createTransport({
     user: CONFIG.SMTP_USER,
     pass: CONFIG.SMTP_PASS,
   },
+  // Custom DNS lookup to STRICTLY force IPv4. 
+  // Standard 'family: 4' is sometimes ignored by the underlying library in certain Node/env versions.
+  lookup: (hostname: string, options: any, callback: (err: Error | null, address: string, family: number) => void) => {
+    return dns.lookup(hostname, { family: 4 }, callback);
+  },
   // Increase timeout for slow cloud network environments
   connectionTimeout: 10000, 
   greetingTimeout: 10000,
-  // Force IPv4 at the connection level as well
-  // @ts-ignore - 'family' is a valid property but sometimes missing in older @types/nodemailer
-  family: 4,
 } as nodemailer.TransportOptions);
 
 /** Verify connection on startup */
